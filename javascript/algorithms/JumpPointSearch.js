@@ -45,7 +45,19 @@ function runJPS(gridMap, startNode, targetNode) {
 
     const isWalkableCell = (coordinateX, coordinateY) => coordinateX >= 0 && coordinateX < totalColumnsCount && coordinateY >= 0 && coordinateY < totalRowsCount && gridMap[coordinateY][coordinateX] === 0;
 
+    const canMove = (currentX, currentY, directionOffsetX, directionOffsetY) => {
+        if (!isWalkableCell(currentX + directionOffsetX, currentY + directionOffsetY)) return false;
+        if (directionOffsetX !== 0 && directionOffsetY !== 0) {
+            if (!isWalkableCell(currentX + directionOffsetX, currentY) || !isWalkableCell(currentX, currentY + directionOffsetY)) {
+                return false; 
+            }
+        }
+        return true;
+    };
+
     function findJumpPoint(currentXCoordinate, currentYCoordinate, directionOffsetX, directionOffsetY) {
+        if (!canMove(currentXCoordinate, currentYCoordinate, directionOffsetX, directionOffsetY)) return null;
+
         let nextCoordinateX = currentXCoordinate + directionOffsetX;
         let nextCoordinateY = currentYCoordinate + directionOffsetY;
 
@@ -53,26 +65,34 @@ function runJPS(gridMap, startNode, targetNode) {
         if (nextCoordinateX === targetNode.x && nextCoordinateY === targetNode.y) return {x: nextCoordinateX, y: nextCoordinateY};
         
         if (directionOffsetX !== 0 && directionOffsetY !== 0) { 
+
             if ((isWalkableCell(nextCoordinateX - directionOffsetX, nextCoordinateY + directionOffsetY) && !isWalkableCell(nextCoordinateX - directionOffsetX, nextCoordinateY)) ||
                 (isWalkableCell(nextCoordinateX + directionOffsetX, nextCoordinateY - directionOffsetY) && !isWalkableCell(nextCoordinateX, nextCoordinateY - directionOffsetY))) {
                 return {x: nextCoordinateX, y: nextCoordinateY};
             }
+
             if (findJumpPoint(nextCoordinateX, nextCoordinateY, directionOffsetX, 0) || findJumpPoint(nextCoordinateX, nextCoordinateY, 0, directionOffsetY)) {
                 return {x: nextCoordinateX, y: nextCoordinateY};
             }
-        } else { 
+        } 
+        
+        else { 
+
             if (directionOffsetX !== 0) {
                 if ((isWalkableCell(nextCoordinateX + directionOffsetX, nextCoordinateY + 1) && !isWalkableCell(nextCoordinateX, nextCoordinateY + 1)) ||
                     (isWalkableCell(nextCoordinateX + directionOffsetX, nextCoordinateY - 1) && !isWalkableCell(nextCoordinateX, nextCoordinateY - 1))) {
                     return {x: nextCoordinateX, y: nextCoordinateY};
                 }
-            } else {
+            } 
+            
+            else {
                 if ((isWalkableCell(nextCoordinateX + 1, nextCoordinateY + directionOffsetY) && !isWalkableCell(nextCoordinateX + 1, nextCoordinateY)) ||
                     (isWalkableCell(nextCoordinateX - 1, nextCoordinateY + directionOffsetY) && !isWalkableCell(nextCoordinateX - 1, nextCoordinateY))) {
                     return {x: nextCoordinateX, y: nextCoordinateY};
                 }
             }
         }
+
         return findJumpPoint(nextCoordinateX, nextCoordinateY, directionOffsetX, directionOffsetY);
     }
 
@@ -100,7 +120,9 @@ function runJPS(gridMap, startNode, targetNode) {
             if (isWalkableCell(currentlyEvaluatingNode.x + normalisedDirectionX, currentlyEvaluatingNode.y + normalisedDirectionY)) validNeighborDirections.push({x: normalisedDirectionX, y: normalisedDirectionY});
             if (!isWalkableCell(currentlyEvaluatingNode.x - normalisedDirectionX, currentlyEvaluatingNode.y)) validNeighborDirections.push({x: -normalisedDirectionX, y: normalisedDirectionY});
             if (!isWalkableCell(currentlyEvaluatingNode.x, currentlyEvaluatingNode.y - normalisedDirectionY)) validNeighborDirections.push({x: normalisedDirectionX, y: -normalisedDirectionY});
-        } else {
+        } 
+        
+        else {
             if (normalisedDirectionX !== 0) {
                 if (isWalkableCell(currentlyEvaluatingNode.x + normalisedDirectionX, currentlyEvaluatingNode.y)) validNeighborDirections.push({x: normalisedDirectionX, y: 0});
                 if (!isWalkableCell(currentlyEvaluatingNode.x, currentlyEvaluatingNode.y + 1)) validNeighborDirections.push({x: normalisedDirectionX, y: 1});
