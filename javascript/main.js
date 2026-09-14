@@ -1,4 +1,6 @@
 import { AlgorithmRegistry } from './PathfinderRegistry.js';
+import './algorithms/AStar.js';
+import './algorithms/JumpPointSearch.js';
 
 let totalColumnsCount = 50, totalRowsCount = 50;
 let gridMap = [];      // 0 = empty, 1 = wall
