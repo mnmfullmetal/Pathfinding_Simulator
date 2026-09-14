@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Pathfinding Simulation</h2>
+        
+        <div class="control-group"> 
+            <label>Algorithm</label>
+            <select id="algorithm-dropdown"></select>
+        </div>
+
+        <div class="control-group">
+            <label>Grid Size (X, Y)</label>
+            <div class="control-row">
+                <input type="number" id="grid-x" value="50" min="10" max="200">
+                <input type="number" id="grid-y" value="50" min="10" max="200">
+            </div>
+            <button id="btn-update-grid" class="secondary">Update Grid Size</button>
+        </div>
+
+        <div class="control-group">
+            <label>Obstacle Layout</label>
+            <select id="layout-mode">
+                <option value="manual">Manual Draw</option>
+                <option value="random">Random Scatter</option>
+            </select>
+            
+            <div id="density-group" class="hidden" style="margin-top: 10px;">
+                <label>Obstacle Density: <span id="density-val">30</span>%</label>
+                <input type="range" id="density" min="0" max="100" value="30">
+            </div>
+            <button id="btn-generate" class="hidden secondary">Generate Scatter</button>
+            <button id="btn-clear" class="secondary">Clear Grid</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #444; margin: 20px 0;">
+
+        <div class="control-group">
+            <label>Simulation Speed: <span id="speed-val">50</span>%</label>
+            <input type="range" id="speed" min="1" max="100" value="50">
+        </div>
+
+        <button id="btn-run">Run Simulation</button>
+        <div class="control-row">
+            <button id="btn-pause" class="secondary">Pause</button>
+            <button id="btn-reset" class="secondary">Reset Visuals</button>
+        </div>
+
+        <div class="stats">
+            <div>Time Taken: <span id="stat-time">0.00</span> ms</div>
+            <div>Nodes Evaluated: <span id="stat-eval">0</span></div>
+            <div>Path Length: <span id="stat-path">0</span></div>
+        </div>
+
+        <div class="legend">
+            <div><div class="box" style="background:#ff3366;"></div>Start</div>
+            <div><div class="box" style="background:#ffcc00;"></div>Target</div>
+            <div><div class="box" style="background:#888;"></div>Wall</div>
+            <div><div class="box" style="background:rgba(0, 122, 204, 0.5);"></div>Evaluated</div>
+            <div><div class="box" style="background:#00ff88;"></div>Path</div>
+        </div>
+        
+        <div style="font-size: 11px; color: #888; margin-top: 15px;">
+            * Click and drag on the grid to draw/erase walls or move the Start and Target nodes.
+        </div>
+    </div>
+
+    <div class="main">
+        <canvas id="gridCanvas"></canvas>
+    </div>
+
+    <script type="module" src="javascript/main.js"></script>
+</body>
+</html>
