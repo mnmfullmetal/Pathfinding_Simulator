@@ -9,6 +9,8 @@ let visualStateGrid = []; // 0 = empty, 1 = evaluated, 2 = path
 let startNode = {x: 5, y: 25};
 let targetNode = {x: 45, y: 25};
 
+let activeRaycasts = [];
+
 let isVisualisationPlaying = false;
 let isVisualisationPaused = false;
 let currentVisualisationRunId = 0;
@@ -92,6 +94,8 @@ document.getElementById('btn-run').addEventListener('click', async () => {
     }
 
     const pathfindingResultObject = selectedAlgorithmObject.run(gridMap, startNode, targetNode);
+
+    activeRaycasts = pathfindingResultObject.raycasts || [];
     
     document.getElementById('stat-time').innerText = pathfindingResultObject.timeMs.toFixed(3);
     document.getElementById('stat-eval').innerText = pathfindingResultObject.evaluated.length;
@@ -175,6 +179,45 @@ drawingCanvasElement.addEventListener('mousemove', (eventObject) => {
     }
 });
 
+
+document.getElementById('btn-save-layout').addEventListener('click', () => {
+    const slotId = document.getElementById('layout-slot').value;
+    const layoutData = {
+        cols: totalColumnsCount,
+        rows: totalRowsCount,
+        start: startNode,
+        target: targetNode,
+        grid: gridMap
+    };
+    
+    localStorage.setItem(`pathfinder_layout_${slotId}`, JSON.stringify(layoutData));
+    console.log(`Layout saved to Slot ${slotId}`);
+});
+
+document.getElementById('btn-load-layout').addEventListener('click', () => {
+    const slotId = document.getElementById('layout-slot').value;
+    const savedData = localStorage.getItem(`pathfinder_layout_${slotId}`);
+    
+    if (savedData) {
+        const layoutData = JSON.parse(savedData);
+        
+        totalColumnsCount = layoutData.cols;
+        totalRowsCount = layoutData.rows;
+        startNode = layoutData.start;
+        targetNode = layoutData.target;
+        
+        document.getElementById('grid-x').value = totalColumnsCount;
+        document.getElementById('grid-y').value = totalRowsCount;
+        
+        gridMap = layoutData.grid.map(row => [...row]);
+        
+        resetVisuals();
+        console.log(`Layout loaded from Slot ${slotId}`);
+    } else {
+        console.warn(`No layout found in Slot ${slotId}`);
+    }
+});
+
 window.addEventListener('mouseup', () => isMouseCurrentlyDragging = false);
 
 function resizeCanvas() {
@@ -212,6 +255,21 @@ function drawGrid() {
 
     canvasGraphicsContext.fillStyle = '#ffcc00';
     canvasGraphicsContext.fillRect(targetNode.x * singleCellWidth, targetNode.y * singleCellHeight, singleCellWidth, singleCellHeight);
+
+    if (activeRaycasts && activeRaycasts.length > 0) {
+        canvasGraphicsContext.strokeStyle = '#ff3333';
+        canvasGraphicsContext.lineWidth = 1;
+        canvasGraphicsContext.beginPath();
+        for (let rc of activeRaycasts) {
+            let startPixelX = (rc.startX + 0.5) * singleCellWidth;
+            let startPixelY = (rc.startY + 0.5) * singleCellHeight;
+            let endPixelX = (rc.endX + 0.5) * singleCellWidth;
+            let endPixelY = (rc.endY + 0.5) * singleCellHeight;
+            canvasGraphicsContext.moveTo(startPixelX, startPixelY);
+            canvasGraphicsContext.lineTo(endPixelX, endPixelY);
+        }
+        canvasGraphicsContext.stroke();
+    }
 }
 
 window.addEventListener('resize', resizeCanvas);
