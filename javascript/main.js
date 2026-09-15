@@ -28,6 +28,7 @@ function resetVisuals() {
     isVisualisationPlaying = false;
     isVisualisationPaused = false;
     document.getElementById('btn-pause').innerText = "Pause";
+    activeRaycasts = [];
     visualStateGrid = Array(totalRowsCount).fill().map(() => Array(totalColumnsCount).fill(0));
     resizeCanvas();
 }
