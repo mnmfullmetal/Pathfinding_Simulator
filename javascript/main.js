@@ -55,6 +55,24 @@ document.getElementById('speed').addEventListener('input', (eventObject) => {
     document.getElementById('speed-val').innerText = eventObject.target.value;
 });
 
+const bloomGroupElement = document.getElementById('bloom-group');
+const bloomRadiusElement = document.getElementById('bloom-radius');
+const bloomValElement = document.getElementById('bloom-val');
+
+algorithmDropdownElement.addEventListener('change', (eventObject) => {
+    if (eventObject.target.value === 'greedy_bug') {
+        bloomGroupElement.style.display = 'block';
+    } else {
+        bloomGroupElement.style.display = 'none';
+    }
+});
+
+algorithmDropdownElement.dispatchEvent(new Event('change'));
+
+bloomRadiusElement.addEventListener('input', (eventObject) => {
+    bloomValElement.innerText = eventObject.target.value;
+});
+
 document.getElementById('btn-update-grid').addEventListener('click', () => {
     totalColumnsCount = parseInt(document.getElementById('grid-x').value);
     totalRowsCount = parseInt(document.getElementById('grid-y').value);
@@ -94,7 +112,11 @@ document.getElementById('btn-run').addEventListener('click', async () => {
         return;
     }
 
-    const pathfindingResultObject = selectedAlgorithmObject.run(gridMap, startNode, targetNode);
+    const algorithmConfig = {
+        bloomRadius: parseInt(bloomRadiusElement.value, 10)
+    };
+
+    const pathfindingResultObject = selectedAlgorithmObject.run(gridMap, startNode, targetNode, algorithmConfig);
 
     activeRaycasts = pathfindingResultObject.raycasts || [];
     
