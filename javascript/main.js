@@ -3,6 +3,9 @@ import './algorithms/AStar.js';
 import './algorithms/JumpPointSearch.js';
 import './algorithms/GreedyBug.js'
 import './algorithms/ThetaStar.js'
+import './algorithms/HPAStar.js'
+
+
 
 let totalColumnsCount = 50, totalRowsCount = 50;
 let gridMap = [];      // 0 = empty, 1 = wall
@@ -63,15 +66,21 @@ const bloomDecayElement = document.getElementById('bloom-decay');
 const decayValElement = document.getElementById('decay-val');
 
 algorithmDropdownElement.addEventListener('change', (eventObject) => {
-    if (eventObject.target.value === 'greedy_bug') {
-        bloomGroupElement.style.display = 'block';
-    } else {
-        bloomGroupElement.style.display = 'none';
-    }
+    const selectedAlgo = eventObject.target.value;
+    bloomGroupElement.style.display = selectedAlgo === 'greedy_bug' ? 'block' : 'none';
+    hpaGroupElement.style.display = selectedAlgo === 'hpastar' ? 'block' : 'none';
 });
 
 bloomDecayElement.addEventListener('input', (eventObject) => {
     decayValElement.innerText = eventObject.target.value;
+});
+
+const hpaGroupElement = document.getElementById('hpa-group');
+const clusterSizeElement = document.getElementById('cluster-size');
+const clusterValElement = document.getElementById('cluster-val');
+
+clusterSizeElement.addEventListener('input', (eventObject) => {
+    clusterValElement.innerText = eventObject.target.value;
 });
 
 algorithmDropdownElement.dispatchEvent(new Event('change'));
@@ -119,9 +128,12 @@ document.getElementById('btn-run').addEventListener('click', async () => {
         return;
     }
 
-    const algorithmConfig = {
-        bloomRadius: parseInt(bloomRadiusElement.value, 10)
+   const algorithmConfig = {
+        bloomRadius: parseInt(bloomRadiusElement.value, 10),
+        bloomDecay: parseInt(bloomDecayElement.value, 10),
+        clusterSize: parseInt(clusterSizeElement.value, 10) // New param
     };
+
 
     const pathfindingResultObject = selectedAlgorithmObject.run(gridMap, startNode, targetNode, algorithmConfig);
 
