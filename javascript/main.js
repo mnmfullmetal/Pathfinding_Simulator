@@ -58,6 +58,8 @@ document.getElementById('speed').addEventListener('input', (eventObject) => {
 const bloomGroupElement = document.getElementById('bloom-group');
 const bloomRadiusElement = document.getElementById('bloom-radius');
 const bloomValElement = document.getElementById('bloom-val');
+const bloomDecayElement = document.getElementById('bloom-decay');
+const decayValElement = document.getElementById('decay-val');
 
 algorithmDropdownElement.addEventListener('change', (eventObject) => {
     if (eventObject.target.value === 'greedy_bug') {
@@ -65,6 +67,10 @@ algorithmDropdownElement.addEventListener('change', (eventObject) => {
     } else {
         bloomGroupElement.style.display = 'none';
     }
+});
+
+bloomDecayElement.addEventListener('input', (eventObject) => {
+    decayValElement.innerText = eventObject.target.value;
 });
 
 algorithmDropdownElement.dispatchEvent(new Event('change'));
