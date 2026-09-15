@@ -5,6 +5,8 @@ import './algorithms/GreedyBug.js'
 import './algorithms/ThetaStar.js'
 import './algorithms/HPAStar.js'
 import './algorithms/Dijkstra.js'
+import './algorithms/BidirectionalAStar.js'
+
 
 
 let totalColumnsCount = 50, totalRowsCount = 50;
