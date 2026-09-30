@@ -2,6 +2,8 @@
 
 A browser-based visualisation tool for testing 2D grid pathfinding algorithms. The simulator provides a visual representation of node evaluation, raycasting, and path construction.
 
+**Live Demo:** [Insert Web URL Here]
+
 ## Core Features
 
 *   **Interactive Canvas:** Click and drag to draw or erase obstacles. Start and target nodes are freely movable.
@@ -28,6 +30,10 @@ A browser-based visualisation tool for testing 2D grid pathfinding algorithms. T
 
 ## Usage
 
+**Web Access**
+Open `[Insert Web URL Here]` in any modern browser to run the simulator immediately.
+
+**Local Execution**
 1.  Download or clone the repository.
 2.  Open `index.html` in any modern web browser. No local server or build tools are required.
 3.  Select an algorithm from the control panel, configure the grid, and initiate the simulation.
