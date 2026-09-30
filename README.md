@@ -2,7 +2,7 @@
 
 A browser-based visualisation tool for testing 2D grid pathfinding algorithms. The simulator provides a visual representation of node evaluation, raycasting, and path construction.
 
-**Live Demo:** [Pathfinding Simulator](pathfinding-simulator.pages.dev)
+**Live Demo:** [Pathfinding Simulator](https://pathfinding-simulator.pages.dev/)
 
 ## Core Features
 
