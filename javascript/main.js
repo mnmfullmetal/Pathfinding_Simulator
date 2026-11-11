@@ -6,6 +6,7 @@ import './algorithms/ThetaStar.js'
 import './algorithms/HPAStar.js'
 import './algorithms/Dijkstra.js'
 import './algorithms/BidirectionalAStar.js'
+import './algorithms/BFS.js'
 
 
 
@@ -479,7 +480,26 @@ const algoData = {
             createScenario('Dead Ends', 'Moderate Efficiency', '#ffcc00', 'Successfully resolves large traps by anchoring and utilizing bug-tracing as a reliable fallback.'),
         complexity: '<span>Time: O(N) Avg</span> | <span>Space: O(1) Avg</span>'
     }
-};
+    ,
+    bfs: {
+        title: '<h1>BREADTH-FIRST SEARCH (BFS)</h1>',
+        overview: 'Explores the grid level by level, expanding all nodes at the current depth before moving deeper. It ignores edge weights and heuristics, guaranteeing the shortest path on an unweighted grid.<br><br><code style="color: #fff; background: #111; padding: 4px 8px; border-radius: 4px;">Queue (FIFO) &middot; uniform expansion</code>',
+        useCases: '<li>Unweighted grid pathfinding</li><li>Shortest path in steps, not distance</li><li>Baseline for comparing smarter algorithms</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">2</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-eval">2</div><div class="diag-eval">2</div><div class="diag-eval">2</div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-eval">1</div><div class="diag-eval">1</div><div class="diag-start">S</div><div class="diag-eval">1</div><div class="diag-eval">1</div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-eval">2</div><div class="diag-eval">2</div><div class="diag-eval">2</div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">2</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'BFS processes nodes in rings of equal distance from the Start (labeled 1, then 2, ...). Because it uses a FIFO queue and no heuristic, it expands uniformly in every direction until the Target is dequeued.',
+        scenarios: 
+            createScenario('Open Terrain', 'Moderate Efficiency', '#ffcc00', 'Finds the shortest step path but expands uniformly instead of aiming at the target.') +
+            createScenario('Cluttered Space', 'Moderate Efficiency', '#ffcc00', 'Guarantees an optimal path if one exists, though it explores many irrelevant branches.') +
+            createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'Must exhaust entire depth levels, including dead ends, before the path can reach the target.'),
+        complexity: '<span>Time: O(|V| + |E|)</span> | <span>Space: O(|V|)</span>'
+    }};
 
 let currentEncyAlgo = 'astar'; 
 
