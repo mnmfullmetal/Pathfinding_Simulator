@@ -479,8 +479,7 @@ const algoData = {
             createScenario('Cluttered Space', 'High Efficiency', '#00ff88', 'Swiftly navigates complex corners using bloom radius and decay without getting stuck.') +
             createScenario('Dead Ends', 'Moderate Efficiency', '#ffcc00', 'Successfully resolves large traps by anchoring and utilizing bug-tracing as a reliable fallback.'),
         complexity: '<span>Time: O(N) Avg</span> | <span>Space: O(1) Avg</span>'
-    }
-    ,
+    },
     bfs: {
         title: '<h1>BREADTH-FIRST SEARCH (BFS)</h1>',
         overview: 'Explores the grid level by level, expanding all nodes at the current depth before moving deeper. It ignores edge weights and heuristics, guaranteeing the shortest path on an unweighted grid.<br><br><code style="color: #fff; background: #111; padding: 4px 8px; border-radius: 4px;">Queue (FIFO) &middot; uniform expansion</code>',
@@ -499,7 +498,8 @@ const algoData = {
             createScenario('Cluttered Space', 'Moderate Efficiency', '#ffcc00', 'Guarantees an optimal path if one exists, though it explores many irrelevant branches.') +
             createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'Must exhaust entire depth levels, including dead ends, before the path can reach the target.'),
         complexity: '<span>Time: O(|V| + |E|)</span> | <span>Space: O(|V|)</span>'
-    }};
+    }
+};
 
 let currentEncyAlgo = 'astar'; 
 
