@@ -2,7 +2,7 @@
 
 A browser-based visualisation tool for testing 2D grid pathfinding algorithms. The simulator provides a visual representation of node evaluation, raycasting, and path construction.
 
-**Live Demo:** [Pathfinding Simulator](https://pathfinding-simulator.pages.dev/)
+[Pathfinding Simulator](https://pathfinding-simulator.pages.dev/)
 
 ## Core Features
 
@@ -21,7 +21,7 @@ A browser-based visualisation tool for testing 2D grid pathfinding algorithms. T
 *   **Jump Point Search (JPS):** Optimised A* for uniform cost grids, skipping symmetrical paths.
 *   **Theta* (Any-Angle):** Line-of-sight pathfinding that bypasses intermediate grid cells to construct unconstrained vectors.
 *   **Hierarchical Pathfinding A* (HPA*):** Macro-graph abstraction dividing the grid into configurable clusters to reduce the search space. Includes dynamic UI controls for cluster sizing.
-*   A custom hybrid algorithm combining directional raycasting, dynamic branching (blooming), and robotic "Bug" obstacle-hugging. It prioritises rapid straight-line speed, using decaying bloom radii to efficiently navigate corners, and falls back on perimeter wall-tracing only as an absolute last resort when trapped.
+*  **Greedy-Bug:** A custom hybrid algorithm combining directional raycasting, dynamic branching (blooming), and robotic "Bug" obstacle-hugging. It prioritises rapid straight-line speed, using decaying bloom radii to efficiently navigate corners, and falls back on perimeter wall-tracing only as an absolute last resort when trapped.
 
 ## Architecture
 
