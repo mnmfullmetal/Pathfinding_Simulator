@@ -94,7 +94,7 @@ button.secondary:hover {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .stats {
@@ -130,3 +130,174 @@ button.secondary:hover {
     height: 12px;
     border-radius: 2px;
 }
+
+.view-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.ency-menu { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+}
+
+.ency-menu li { 
+    padding: 12px 15px; 
+    cursor: pointer; 
+    color: #888; 
+    border-bottom: 1px solid #333; 
+    font-size: 14px;
+}
+
+.ency-menu li:hover { background: #333; }
+.ency-menu li.active { 
+    color: #fff; 
+    font-weight: bold; 
+    border-left: 3px solid #0e639c; 
+    background: #1e1e1e; 
+}
+
+.ency-content { 
+    align-items: stretch; 
+    justify-content: flex-start; 
+    overflow-y: auto; 
+}
+
+.ency-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    margin-bottom: 25px; 
+    width: 100%; 
+    border-bottom: 1px solid #444; 
+    padding-bottom: 15px;
+}
+
+.ency-title h1 { 
+    margin: 10px 0 0 0; 
+    color: #fff; 
+    font-size: 28px;
+}
+
+.tag { 
+    font-size: 11px; 
+    padding: 3px 8px; 
+    border-radius: 12px; 
+    background: rgba(0, 122, 204, 0.2); 
+    color: #4fc3f7; 
+    margin-right: 5px; 
+    border: 1px solid #0e639c;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ency-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 20px; 
+    width: 100%; 
+}
+
+.ency-card { 
+    background: #252526; 
+    border: 1px solid #3c3c3c; 
+    border-radius: 6px; 
+    padding: 25px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
+}
+
+.ency-card h3 { 
+    margin-top: 0; 
+    color: #fff; 
+    font-size: 13px; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    color: #aaa; 
+    border-bottom: 1px solid #333; 
+    padding-bottom: 10px; 
+    margin-bottom: 15px;
+}
+
+.no-emoji-list { 
+    list-style-type: square; 
+    color: #ccc; 
+    padding-left: 20px; 
+    font-size: 14px;
+}
+.no-emoji-list li { margin-bottom: 10px; }
+
+.scenario { 
+    display: flex; 
+    margin-bottom: 15px; 
+    background: #1e1e1e; 
+    padding: 12px; 
+    border-left: 3px solid #0e639c; 
+    border-radius: 0 4px 4px 0; 
+}
+.scenario-name { 
+    width: 140px; 
+    font-weight: bold; 
+    color: #ddd; 
+    font-size: 13px; 
+    flex-shrink: 0; 
+}
+.scenario-desc { 
+    font-size: 13px; 
+    color: #999; 
+    line-height: 1.4;
+}
+
+.complexity { 
+    margin-top: 20px; 
+    font-family: monospace; 
+    color: #4fc3f7; 
+    font-size: 14px; 
+    text-align: center; 
+    background: #111; 
+    padding: 12px; 
+    border-radius: 4px; 
+    border: 1px solid #333;
+}
+
+.css-grid-diagram { 
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 2px; 
+    background: #333; 
+    padding: 2px; 
+    border-radius: 4px; 
+    margin-bottom: 20px; 
+}
+.css-grid-diagram div { 
+    aspect-ratio: 1; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 11px; 
+    font-family: monospace; 
+    color: rgba(255,255,255,0.7); 
+}
+.diag-empty { background: #1e1e1e; }
+.diag-wall { background: #888; }
+.diag-eval { background: rgba(0, 122, 204, 0.3); border: 1px solid #0e639c;}
+.diag-start { background: #ff3366; color: white; font-weight: bold; font-size: 14px !important; }
+.diag-target { background: #ffcc00; color: #333; font-weight: bold; font-size: 14px !important; }
+
+.diagram-legend { 
+    display: flex; 
+    gap: 20px; 
+    font-size: 12px; 
+    color: #aaa; 
+    align-items: center;
+    justify-content: center;
+}
+.diagram-legend div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.box-start { background: #ff3366; color: white; padding: 2px 6px; border-radius: 2px; font-weight: bold;}
+.box-target { background: #ffcc00; color: #333; padding: 2px 6px; border-radius: 2px; font-weight: bold;}
+.box-eval { width: 14px; height: 14px; background: rgba(0, 122, 204, 0.5); display: inline-block; border: 1px solid #0e639c; border-radius: 2px;}

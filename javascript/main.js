@@ -316,6 +316,222 @@ function drawGrid() {
     }
 }
 
+const simulatorView = document.getElementById('simulator-view');
+const encyclopediaView = document.getElementById('encyclopedia-view');
+const btnInfo = document.getElementById('btn-info');
+const btnCloseEncy = document.getElementById('btn-close-ency');
+const btnTryAlgo = document.getElementById('btn-try-algo');
+const encyMenuItems = document.querySelectorAll('.ency-menu li');
+
+const encyTitle = document.getElementById('ency-title-container');
+const encyOverview = document.getElementById('ency-overview-text');
+const encyUseCases = document.getElementById('ency-use-cases');
+const encyDiagram = document.getElementById('ency-diagram-container');
+const encyLegend = document.getElementById('ency-diagram-legend');
+const encyDiagDesc = document.getElementById('ency-diagram-desc');
+const encyScenarios = document.getElementById('ency-scenarios-container');
+const encyComplexity = document.getElementById('ency-complexity');
+
+const createScenario = (name, efficiency, color, desc) => `
+    <div class="scenario">
+        <div class="scenario-name">${name}</div>
+        <div class="scenario-desc"><strong style="color: ${color};">${efficiency}</strong><br>${desc}</div>
+    </div>
+`;
+
+const standardLegend = `
+    <div><span class="box-start">S</span> Start</div>
+    <div><span class="box-target">T</span> Target</div>
+    <div><span class="box-eval"></span> Evaluated Nodes</div>
+`;
+
+const algoData = {
+    astar: {
+        title: '<h1>A* (A-STAR)</h1>',
+        overview: 'Finds the shortest path on a grid by combining actual cost from the start g(n) and estimated cost to the target h(n), using the evaluation formula:<br><br><code style="color: #fff; background: #111; padding: 4px 8px; border-radius: 4px;">f(n) = g(n) + h(n)</code>',
+        useCases: '<li>General 2D game movement</li><li>Obstacle-heavy grids</li><li>Where a single optimal path is required</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-eval">f</div>
+            <div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-wall"></div><div class="diag-wall"></div><div class="diag-wall"></div>
+            <div class="diag-empty"></div><div class="diag-start">S</div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-wall"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'The algorithm evaluates neighbors around the Start node, scoring them based on distance traveled (g) + estimated distance to Target (h). It prioritizes expanding nodes with the lowest total score (f) to flow around the wall.',
+        scenarios: 
+            createScenario('Open Terrain', 'High Efficiency', '#00ff88', 'Expands in a narrow cone toward target.') +
+            createScenario('Cluttered Space', 'Moderate Efficiency', '#ffcc00', 'Explores smoothly around edges of obstacles.') +
+            createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'Forces massive evaluation expansion as it explores closed corridors.'),
+        complexity: '<span>Time: O(b<sup>d</sup>)</span> | <span>Space: O(b<sup>d</sup>)</span>'
+    },
+    dijkstra: {
+        title: '<h1>DIJKSTRA</h1>',
+        overview: 'Expands outward uniformly from the start node evaluating the actual cost g(n) to reach each node. It does not use a heuristic to guide it toward the target.<br><br><code style="color: #fff; background: #111; padding: 4px 8px; border-radius: 4px;">f(n) = g(n)</code>',
+        useCases: '<li>Unknown target locations</li><li>Pathing to multiple potential targets</li><li>Generating flow-fields</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">g</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-start">S</div><div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-eval">g</div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">g</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'Because it lacks a target heuristic, Dijkstra evaluates nodes uniformly in a diamond or circular pattern radiating outward from the start node until it blindly hits the target.',
+        scenarios: 
+            createScenario('Open Terrain', 'Low Efficiency', '#ff3333', 'Wastes evaluations expanding away from the target.') +
+            createScenario('Cluttered Space', 'Low Efficiency', '#ff3333', 'Evaluates all reachable space regardless of direction.') +
+            createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'Will eventually find the exit, but checks all dead ends equally.'),
+        complexity: '<span>Time: O(|V| + |E|)</span> | <span>Space: O(|V|)</span>'
+    },
+    bidirectional: {
+        title: '<h1>BIDIRECTIONAL A*</h1>',
+        overview: 'Executes two simultaneous A* searches: one expanding forward from the Start, and one expanding backward from the Target. The algorithm terminates when the two search frontiers intersect.',
+        useCases: '<li>Point-to-point routing</li><li>Large maps with known start/end coordinates</li><li>Road networks</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">h</div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">h</div><div class="diag-eval">h</div><div class="diag-eval">h</div>
+            <div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-start">S</div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'The two frontiers grow toward each other, drastically reducing the search radius required compared to a single directional search.',
+        scenarios: 
+            createScenario('Open Terrain', 'High Efficiency', '#00ff88', 'Halves the search depth, significantly reducing evaluated nodes.') +
+            createScenario('Cluttered Space', 'Moderate Efficiency', '#ffcc00', 'Frontiers may miss each other temporarily around large obstacles.') +
+            createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'If one side starts in a dead end, it evaluates the whole trap before intersecting.'),
+        complexity: '<span>Time: O(b<sup>d/2</sup>)</span> | <span>Space: O(b<sup>d/2</sup>)</span>'
+    },
+    jps: {
+        title: '<h1>JUMP POINT SEARCH</h1>',
+        overview: 'An optimization for A* on uniform-cost grids. It prunes symmetrically redundant paths by casting rays vertically, horizontally, and diagonally, only adding nodes to the open set when they are "forced neighbors" (corners of obstacles).',
+        useCases: '<li>Massive, uniform, unweighted grids</li><li>RTS Games with open maps</li><li>Reducing memory overhead</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-start">S</div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: '<div><span class="box-start">S</span> Start</div><div><span class="box-target">T</span> Target</div><div><span class="box-eval" style="border-radius: 50%;"></span> Jump Point</div>',
+        diagDesc: 'Instead of evaluating every single cell, JPS "jumps" across empty space. The node marked `f` is a Jump Point because it is adjacent to the corner of an obstacle, making it mathematically necessary to evaluate.',
+        scenarios: 
+            createScenario('Open Terrain', 'Max Efficiency', '#00ff88', 'Skips thousands of empty cells in a single bound.') +
+            createScenario('Cluttered Space', 'High Efficiency', '#00ff88', 'Highly effective at pruning useless paths around square walls.') +
+            createScenario('Dead Ends', 'Moderate Efficiency', '#ffcc00', 'Still bounded by A* worst-case scenarios, but evaluates faster.'),
+        complexity: '<span>Time: O(b<sup>d</sup>)</span> | <span>Space: O(b<sup>d</sup>)</span>'
+    },
+    thetastar: {
+        title: '<h1>THETA*</h1>',
+        overview: 'A variant of A* that propagates information along grid edges without constraining the path to grid cell transitions. It checks line-of-sight between a node\'s parent and its neighbor to bypass intermediate cells.',
+        useCases: '<li>Unconstrained 2D movement</li><li>Smooth, realistic unit pathing</li><li>Removing blocky/zigzag paths</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-start">S</div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'Theta* can connect the Start node directly to a distant node (like T) via a straight vector, completely ignoring the 8-directional grid constraints if no walls block the line of sight.',
+        scenarios: 
+            createScenario('Open Terrain', 'High Efficiency', '#00ff88', 'Finds the true shortest Euclidean vector.') +
+            createScenario('Cluttered Space', 'Moderate Efficiency', '#ffcc00', 'Line-of-sight checks add constant overhead to evaluation time.') +
+            createScenario('Dead Ends', 'Low Efficiency', '#ff3333', 'Suffers from the same expansion traps as standard A*.'),
+        complexity: '<span>Time: O(b<sup>d</sup>)</span> | <span>Space: O(b<sup>d</sup>)</span>'
+    },
+    hpastar: {
+        title: '<h1>HIERARCHICAL A*</h1>',
+        overview: 'Divides the grid into macro-clusters. Pre-computes local paths between entrances on cluster borders, reducing the global search to a high-level graph of clusters rather than individual grid cells.',
+        useCases: '<li>Massive scale MMO maps</li><li>Real-time dynamic pathing across long distances</li><li>Reducing memory limits</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-wall"></div><div class="diag-eval">f</div><div class="diag-wall"></div><div class="diag-wall"></div><div class="diag-eval">f</div><div class="diag-wall"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-start">S</div><div class="diag-empty"></div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: '<div><span class="box-start">S</span> Start</div><div><span class="box-target">T</span> Target</div><div><span class="box-eval" style="border-radius: 50%;"></span> Cluster Entrance</div>',
+        diagDesc: 'The walls here represent the boundaries of a predefined cluster size. The algorithm only searches for connections between cluster entrances (f), abstracting the details inside the cluster until traversal is required.',
+        scenarios: 
+            createScenario('Open Terrain', 'Max Efficiency', '#00ff88', 'Skips entire sectors of the map effortlessly.') +
+            createScenario('Cluttered Space', 'High Efficiency', '#00ff88', 'Bypasses complex local geometry by routing globally.') +
+            createScenario('Dead Ends', 'High Efficiency', '#00ff88', 'Pre-computation identifies unreachable cluster entrances, ignoring dead ends.'),
+        complexity: '<span>Time: O(b<sup>d/2</sup>)</span> | <span>Space: O(1) Local</span>'
+    },
+    greedy_bug: {
+        title: '<h1>GREEDYBUG</h1>',
+      overview: 'A custom hybrid algorithm combining directional raycasting, dynamic branching (blooming), and robotic "Bug" obstacle-hugging. It prioritizes rapid straight-line speed, using decaying bloom radii to efficiently navigate corners, and falls back on perimeter wall-tracing only as an absolute last resort when trapped.',
+        useCases: '<li>Performance-critical pathing</li><li>Highly cluttered environments</li><li>Lightning-fast point-to-point traversal</li>',
+        diagram: `
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-target">T</div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-eval">f</div><div class="diag-wall"></div><div class="diag-wall"></div><div class="diag-wall"></div>
+            <div class="diag-start">S</div><div class="diag-eval">f</div><div class="diag-eval">f</div><div class="diag-wall"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+            <div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div><div class="diag-empty"></div>
+        `,
+        legend: standardLegend,
+        diagDesc: 'Casts a continuous ray in a straight line. Upon collision, it uses dynamic "blooming" to spawn new rays around the obstacle. If collision thresholds are exceeded, it anchors its distance and engages an escape trace.',
+        scenarios: 
+            createScenario('Open Terrain', 'Max Efficiency', '#00ff88', 'Connects Start and Target rapidly with continuous raycasts.') +
+            createScenario('Cluttered Space', 'High Efficiency', '#00ff88', 'Swiftly navigates complex corners using bloom radius and decay without getting stuck.') +
+            createScenario('Dead Ends', 'Moderate Efficiency', '#ffcc00', 'Successfully resolves large traps by anchoring and utilizing bug-tracing as a reliable fallback.'),
+        complexity: '<span>Time: O(N) Avg</span> | <span>Space: O(1) Avg</span>'
+    }
+};
+
+let currentEncyAlgo = 'astar'; 
+
+function syncEncyclopediaSelection(algoId) {
+    currentEncyAlgo = algoId;
+    
+    encyMenuItems.forEach(li => {
+        if (li.getAttribute('data-algo') === algoId) {
+            li.classList.add('active');
+        } else {
+            li.classList.remove('active');
+        }
+    });
+    
+    const data = algoData[algoId] || algoData['astar'];
+    encyTitle.innerHTML = data.title;
+    encyOverview.innerHTML = data.overview;
+    encyUseCases.innerHTML = data.useCases;
+    encyDiagram.innerHTML = data.diagram;
+    encyLegend.innerHTML = data.legend;
+    encyDiagDesc.innerHTML = data.diagDesc;
+    encyScenarios.innerHTML = data.scenarios;
+    encyComplexity.innerHTML = data.complexity;
+}
+
+encyMenuItems.forEach(item => {
+    item.addEventListener('click', (eventObject) => {
+        syncEncyclopediaSelection(eventObject.target.getAttribute('data-algo'));
+    });
+});
+
+function openEncyclopedia() {
+    simulatorView.classList.add('hidden');
+    encyclopediaView.classList.remove('hidden');
+    syncEncyclopediaSelection(algorithmDropdownElement.value);
+}
+
+function closeEncyclopedia() {
+    encyclopediaView.classList.add('hidden');
+    simulatorView.classList.remove('hidden');
+    resizeCanvas();
+}
+
+btnInfo.addEventListener('click', openEncyclopedia);
+btnCloseEncy.addEventListener('click', closeEncyclopedia);
+
+btnTryAlgo.addEventListener('click', () => {
+    algorithmDropdownElement.value = currentEncyAlgo;
+    algorithmDropdownElement.dispatchEvent(new Event('change'));
+    closeEncyclopedia();
+});
+
 window.addEventListener('resize', resizeCanvas);
 
 initGrid();

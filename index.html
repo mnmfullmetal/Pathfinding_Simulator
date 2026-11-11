@@ -7,12 +7,17 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <div id="simulator-view" class="view-container">
     <div class="sidebar">
         <h2>Pathfinding Simulation</h2>
         
         <div class="control-group"> 
             <label>Algorithm</label>
-            <select id="algorithm-dropdown"></select>
+            <div class="control-row">
+                <select id="algorithm-dropdown"></select>
+                <button id="btn-info" class="secondary" style="margin-top: 0; width: 40px;" title="Algorithm Info">?</button>
+            </div>
         </div>
 
         <div class="control-group" id="bloom-group" style="display: none;">
@@ -100,6 +105,53 @@
 
     <div class="main">
         <canvas id="gridCanvas"></canvas>
+    </div>
+    </div>
+
+    <div id="encyclopedia-view" class="view-container hidden">
+        <div class="sidebar ency-sidebar">
+            <h2>Algorithm Encyclopedia</h2>
+           <ul class="ency-menu">
+            <li class="active" data-algo="astar">A* Pathfinding</li>
+            <li data-algo="dijkstra">Dijkstra</li>
+            <li data-algo="bidirectional">Bidirectional A*</li>
+            <li data-algo="jps">Jump Point Search (JPS)</li>
+            <li data-algo="thetastar">Theta*</li>
+            <li data-algo="hpastar">Hierarchical A* (HPA*)</li>
+            <li data-algo="greedy_bug">GreedyBug</li>
+        </ul>
+        </div>
+        
+        <div class="main ency-content">
+    <div class="ency-header">
+        <div class="ency-title" id="ency-title-container"></div>
+        <button id="btn-close-ency" class="secondary" style="width: auto; padding: 10px 20px;">Return to Simulator</button>
+    </div>
+    
+    <div class="ency-grid">
+        <div class="ency-card">
+            <h3>Algorithm Overview</h3>
+            <p id="ency-overview-text" style="font-size: 14px; line-height: 1.5; color: #ccc;"></p>
+            
+            <h3 style="margin-top: 30px;">Ideal Use Cases</h3>
+            <ul id="ency-use-cases" class="no-emoji-list"></ul>
+            <button id="btn-try-algo" class="primary" style="margin-top: 20px;">Try in Simulator</button>
+        </div>
+
+        <div class="ency-card diagram-card" style="grid-row: span 2;">
+            <h3>How it works (Diagram)</h3>
+            <div id="ency-diagram-container" class="css-grid-diagram"></div>
+            <div id="ency-diagram-legend" class="diagram-legend"></div>
+            <p id="ency-diagram-desc" style="font-size: 13px; color: #888; margin-top: 20px;"></p>
+        </div>
+
+        <div class="ency-card">
+            <h3>Expected Scenario Outcomes</h3>
+            <div id="ency-scenarios-container"></div>
+            <div id="ency-complexity" class="complexity"></div>
+        </div>
+    </div>
+</div>
     </div>
 
     <script type="module" src="javascript/main.js"></script>
